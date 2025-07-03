@@ -1,0 +1,8 @@
+.idea
+.venv
+*.pyc
+*.db
+temp
+setup.py
+rename.py
+venv.tar.gz
