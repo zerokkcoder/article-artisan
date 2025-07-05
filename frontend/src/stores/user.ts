@@ -92,6 +92,10 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  const logout = () => {
+    clearUser()
+  }
+
   return {
     // State
     user,
@@ -107,6 +111,7 @@ export const useUserStore = defineStore('user', () => {
     setError,
     initializeUser,
     login,
-    register
+    register,
+    logout
   }
 })

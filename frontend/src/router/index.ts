@@ -2,6 +2,8 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '../pages/Login.vue'
 import Register from '../pages/Register.vue'
 import Home from '../pages/Home.vue'
+import Dashboard from '../views/Dashboard.vue'
+import Welcome from '../views/Welcome.vue'
 
 const routes = [
   {
@@ -22,7 +24,19 @@ const routes = [
     path: '/home',
     name: 'Home',
     component: Home,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'Welcome',
+        component: Welcome
+      },
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: Dashboard
+      }
+    ]
   }
 ]
 
