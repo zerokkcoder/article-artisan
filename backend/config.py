@@ -25,6 +25,8 @@ class WindowConfig:
     debug: bool = False
     min_width: int = 800
     min_height: int = 600
+    dev_server_url: str = 'http://localhost:5173'
+    dev_server_port: int = 5173
 
 
 @dataclass

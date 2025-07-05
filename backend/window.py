@@ -3,17 +3,14 @@ import webview
 import sys
 from pathlib import Path
 from backend.api import MainAPI
+from backend.config import config
 
 
-class WindowConfig:
-    """窗口配置类"""
+class WindowManager:
+    """窗口管理器"""
     
     def __init__(self):
-        self.title = 'Article Artisan'
-        self.width = 1200
-        self.height = 800
-        self.min_size = (800, 600)
-        self.resizable = False
+        self.window_config = config.window
         self.shadow = True
         self.on_top = False
     
@@ -36,7 +33,7 @@ class WindowConfig:
             print(f"Loading from built files: {url}")
         else:
             # 开发模式：使用开发服务器
-            url = 'http://localhost:5173'
+            url = self.window_config.dev_server_url
             print(f"Loading from dev server: {url}")
             print("Make sure to run 'npm run dev' in the frontend directory first!")
         
@@ -49,13 +46,13 @@ class WindowConfig:
         
         # 创建窗口
         window = webview.create_window(
-            title=self.title,
+            title=self.window_config.title,
             url=url,
             js_api=api,
-            width=self.width,
-            height=self.height,
-            min_size=self.min_size,
-            resizable=self.resizable,
+            width=self.window_config.width,
+            height=self.window_config.height,
+            min_size=(self.window_config.min_width, self.window_config.min_height),
+            resizable=self.window_config.resizable,
             shadow=self.shadow,
             on_top=self.on_top
         )
