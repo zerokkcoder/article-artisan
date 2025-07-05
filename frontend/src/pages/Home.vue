@@ -19,7 +19,31 @@
 
 <style scoped>
 .common-layout {
-  height: 100vh;
+  height: 100vh !important;
+  width: 100vw !important;
+  overflow: hidden !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.common-layout ::-webkit-scrollbar {
+  display: none !important;
+}
+
+.common-layout {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.el-container {
+  height: 100% !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .el-header {
@@ -27,6 +51,8 @@
   color: var(--el-text-color-primary);
   text-align: center;
   line-height: 60px;
+  flex-shrink: 0;
+  overflow: hidden !important;
 }
 
 .el-aside {
@@ -34,6 +60,8 @@
   color: var(--el-text-color-primary);
   text-align: center;
   line-height: 200px;
+  flex-shrink: 0;
+  overflow: hidden !important;
 }
 
 .el-main {
@@ -41,6 +69,8 @@
   color: var(--el-text-color-primary);
   text-align: center;
   line-height: 160px;
+  overflow: hidden !important;
+  flex: 1;
 }
 
 .el-footer {
@@ -48,5 +78,7 @@
   color: var(--el-text-color-primary);
   text-align: center;
   line-height: 60px;
+  flex-shrink: 0;
+  overflow: hidden !important;
 }
 </style>
