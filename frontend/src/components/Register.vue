@@ -8,13 +8,13 @@
       </template>
       
       <el-form
-        ref="registerFormRef"
-        :model="registerForm"
-        :rules="registerRules"
-        label-width="80px"
-        class="register-form"
-      >
-        <el-form-item label="用户名" prop="username">
+          ref="registerFormRef"
+          :model="registerForm"
+          :rules="rules as any"
+          label-width="80px"
+          class="register-form"
+        >
+          <el-form-item label="用户名" prop="username">
           <el-input
             v-model="registerForm.username"
             placeholder="请输入用户名"
@@ -57,13 +57,13 @@
         <el-form-item>
           <el-button
             type="primary"
-            :loading="loading"
+            :loading="isLoading"
             @click="handleRegister"
             class="register-button"
           >
             注册
           </el-button>
-          <el-button @click="$emit('switch-to-login')" class="switch-button">
+          <el-button @click="switchToLogin" class="switch-button">
             已有账号，去登录
           </el-button>
         </el-form-item>
@@ -73,42 +73,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import { ref } from 'vue'
+import { useAuth } from '../composables/useAuth'
+import type { FormInstance } from 'element-plus'
 
-interface RegisterForm {
-  username: string
-  email: string
-  password: string
-  confirmPassword: string
-}
-
-const emit = defineEmits<{
-  'switch-to-login': []
-  'register-success': []
-}>()
+const { register, switchToLogin, isLoading } = useAuth()
 
 const registerFormRef = ref<FormInstance>()
-const loading = ref(false)
-
-const registerForm = reactive<RegisterForm>({
+const registerForm = ref({
   username: '',
   email: '',
   password: '',
   confirmPassword: ''
 })
 
-const validateConfirmPassword = (_rule: any, value: string, callback: any) => {
-  if (value === '') {
-    callback(new Error('请再次输入密码'))
-  } else if (value !== registerForm.password) {
-    callback(new Error('两次输入密码不一致'))
-  } else {
-    callback()
-  }
-}
-
-const registerRules: FormRules<RegisterForm> = {
+const rules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' },
     { min: 3, max: 20, message: '用户名长度在 3 到 20 个字符', trigger: 'blur' }
@@ -122,34 +101,32 @@ const registerRules: FormRules<RegisterForm> = {
     { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur' }
   ],
   confirmPassword: [
-    { required: true, message: '请再次输入密码', trigger: 'blur' },
-    { validator: validateConfirmPassword, trigger: 'blur' }
+    { required: true, message: '请确认密码', trigger: 'blur' },
+    {
+      validator: (_rule: any, value: any, callback: any) => {
+        if (value !== registerForm.value.password) {
+          callback(new Error('两次输入密码不一致'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'blur'
+    }
   ]
 }
 
 const handleRegister = async () => {
   if (!registerFormRef.value) return
   
-  try {
-    const valid = await registerFormRef.value.validate()
-    if (!valid) return
-    
-    loading.value = true
-    
-    // 模拟注册API调用
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // 模拟注册成功
-    (ElMessage as any).success('注册成功！请登录')
-    emit('register-success')
-    
-    // 清空表单
-    registerFormRef.value.resetFields()
-  } catch (error) {
-    (ElMessage as any).error('注册失败，请重试！')
-  } finally {
-    loading.value = false
-  }
+  const valid = await registerFormRef.value.validate().catch(() => false)
+  if (!valid) return
+  
+  await register(
+    registerForm.value.username,
+    registerForm.value.email,
+    registerForm.value.password,
+    registerForm.value.confirmPassword
+  )
 }
 </script>
 

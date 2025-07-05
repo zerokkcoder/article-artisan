@@ -9,7 +9,7 @@
         <el-dropdown @command="handleCommand">
           <span class="user-info">
             <el-icon><User /></el-icon>
-            {{ user.username }}
+            {{ currentUser?.username || '用户' }}
             <el-icon class="el-icon--right"><arrow-down /></el-icon>
           </span>
           <template #dropdown>
@@ -163,13 +163,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-
-interface User {
-  username: string
-  token: string
-}
+import { useAuth } from '../composables/useAuth'
+import { useUserStore } from '../stores/user'
 
 interface Stats {
   totalArticles: number
@@ -184,13 +181,8 @@ interface Article {
   date: string
 }
 
-defineProps<{
-  user: User
-}>()
-
-const emit = defineEmits<{
-  logout: []
-}>()
+const { logout, user: currentUser } = useAuth()
+const userStore = useUserStore()
 
 const activeMenu = ref('dashboard')
 
@@ -223,20 +215,21 @@ const handleCommand = async (command: string) => {
       break
     case 'logout':
       try {
-        await ElMessageBox.confirm(
-          '确定要退出登录吗？',
-          '提示',
-          {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }
-        )
-        emit('logout');
-        (ElMessage as any).success('已退出登录')
-      } catch {
-        // 用户取消
-      }
+          await ElMessageBox.confirm(
+            '确定要退出登录吗？',
+            '提示',
+            {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }
+          )
+          
+          // 使用组合式函数处理退出登录
+          logout()
+        } catch {
+          // 用户取消
+        }
       break
   }
 }
@@ -250,6 +243,11 @@ const getViewTitle = () => {
   }
   return titles[activeMenu.value] || '功能页面'
 }
+
+// 初始化用户信息
+onMounted(() => {
+  userStore.initializeUser()
+})
 </script>
 
 <style scoped>

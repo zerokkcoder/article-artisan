@@ -77,7 +77,7 @@ def main():
     
     # 启动webview
     webview.start(
-        debug=False,  # 开发模式下启用调试
+        debug=True,  # 开发模式下启用调试
         http_server=True  # 启用内置HTTP服务器
     )
 
