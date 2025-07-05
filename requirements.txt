@@ -1,1 +1,4 @@
-flet
+pywebview
+psutil
+requests
+pyinstaller

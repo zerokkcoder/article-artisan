@@ -1,10 +1,6 @@
+# IDE
 .idea
+.vscode
+
+# ENV
 .venv
-*.pyc
-*.db
-temp
-setup.py
-rename.py
-venv.tar.gz
-*/__pycache__
-storage
