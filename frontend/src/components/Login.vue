@@ -11,8 +11,8 @@
           ref="loginFormRef"
           :model="loginForm"
           :rules="rules as any"
-          label-width="80px"
           class="login-form"
+          label-position="top"
         >
           <el-form-item label="用户名" prop="username">
           <el-input
@@ -34,7 +34,7 @@
           />
         </el-form-item>
         
-        <el-form-item>
+        <el-form-item class="button-group" label-width="0">
           <el-button
             type="primary"
             :loading="isLoading"
@@ -88,17 +88,26 @@ const handleLogin = async () => {
 
 <style scoped>
 .login-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .login-card {
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .card-header {
@@ -109,18 +118,55 @@ const handleLogin = async () => {
   margin: 0;
   color: #303133;
   font-weight: 600;
+  font-size: 24px;
 }
 
 .login-form {
   padding: 20px 0;
 }
 
+.button-group {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.button-group :deep(.el-form-item__content) {
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 12px;
+}
+
+.button-group :deep(.el-button) {
+  margin: 0 !important;
+}
+
 .login-button {
   width: 100%;
-  margin-bottom: 10px;
+  height: 44px;
+  font-size: 16px;
 }
 
 .switch-button {
   width: 100%;
+  height: 44px;
+  font-size: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+  .login-container {
+    padding: 10px;
+  }
+  
+  .login-card {
+    max-width: 100%;
+  }
+  
+  .card-header h2 {
+    font-size: 20px;
+  }
 }
 </style>
