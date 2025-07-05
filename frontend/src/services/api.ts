@@ -18,7 +18,26 @@ async function safeApiCall<T>(method: string, ...args: any[]): Promise<T> {
   
   try {
     const api = window.pywebview!.api as any
-    return await api[method](...args)
+    
+    // 处理嵌套的API调用，如 'auth_api.login'
+    const methodParts = method.split('.')
+    let target = api
+    
+    // 遍历到最后一个属性之前
+    for (let i = 0; i < methodParts.length - 1; i++) {
+      target = target[methodParts[i]]
+      if (!target) {
+        throw new Error(`API module '${methodParts.slice(0, i + 1).join('.')}' not found`)
+      }
+    }
+    
+    // 获取最终的方法
+    const finalMethod = methodParts[methodParts.length - 1]
+    if (typeof target[finalMethod] !== 'function') {
+      throw new Error(`API method '${method}' is not a function`)
+    }
+    
+    return await target[finalMethod](...args)
   } catch (error) {
     console.error(`API call failed: ${method}`, error)
     throw error
@@ -34,7 +53,7 @@ export const authApi = {
     try {
       if (isApiAvailable()) {
         // 调用Python后端API
-        const result = await safeApiCall('login', credentials.username, credentials.password)
+        const result = await safeApiCall('auth_api.login', credentials.username, credentials.password)
         return result as ApiResponse<LoginResponse>
       } else {
         // 开发模式下的模拟登录
@@ -81,7 +100,7 @@ export const authApi = {
     try {
       if (isApiAvailable()) {
          // 调用Python后端API
-         const result = await safeApiCall('register', userData.username, userData.email, userData.password, userData.confirmPassword)
+         const result = await safeApiCall('auth_api.register', userData.username, userData.email, userData.password, userData.confirmPassword)
          return result as ApiResponse<LoginResponse>
       } else {
         // 开发模式下的模拟注册
@@ -119,7 +138,7 @@ export const authApi = {
     try {
       if (isApiAvailable()) {
         // 调用Python后端API
-        const result = await safeApiCall('logout')
+        const result = await safeApiCall('auth_api.logout')
         return result as ApiResponse<{ message: string }>
       } else {
         // 开发模式下的模拟登出
