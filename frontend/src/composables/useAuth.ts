@@ -12,7 +12,7 @@ export function useAuth() {
     
     if (success) {
       showMessage.success('登录成功！')
-      router.push('/dashboard')
+      router.push('/home')
     } else {
       showMessage.error(userStore.error || '登录失败')
     }
@@ -23,7 +23,7 @@ export function useAuth() {
     
     if (success) {
       showMessage.success('注册成功！')
-      router.push('/dashboard')
+      router.push('/home')
     } else {
       showMessage.error(userStore.error || '注册失败')
     }

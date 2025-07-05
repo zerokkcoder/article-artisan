@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '../pages/Login.vue'
 import Register from '../pages/Register.vue'
-import Dashboard from '../pages/Dashboard.vue'
+import Home from '../pages/Home.vue'
 
 const routes = [
   {
@@ -19,9 +19,9 @@ const routes = [
     component: Register
   },
   {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: Dashboard,
+    path: '/home',
+    name: 'Home',
+    component: Home,
     meta: { requiresAuth: true }
   }
 ]
@@ -47,7 +47,7 @@ router.beforeEach((to, _from, next) => {
     if (to.meta.requiresAuth && !isAuthenticated) {
       next('/login')
     } else if ((to.path === '/login' || to.path === '/register') && isAuthenticated) {
-      next('/dashboard')
+      next('/home')
     } else {
       next()
     }
